@@ -68,8 +68,9 @@ The project now includes a very simple similarity search and chatbot endpoint, a
 - `GET /rag/chat?q=your+question` &ndash; a toy chat endpoint that replies with the text of the most similar document.
 - `GET /rag/chat-graph?q=your+question` &ndash; uses a graph lookup to traverse linked docs for a basic conversation.
 - `GET /rag/chat-llm?q=your+question` &ndash; if no context is found in the graph, forwards the question to OpenRouter's LLM.
-- Previous LLM answers are stored so repeated questions can be answered
-  directly from MongoDB without another API call.
+- Previous LLM answers are stored so repeated questions can be answered directly from MongoDB without another API call.
+- Graph facts are verbalized via a `LangGraphService` so answers read naturally instead of returning raw triples.
+
 - `POST /rag/fact?text=RCB+won+IPL+2025` &ndash; store a simple fact. Statements like
   "RCB won IPL 2025" automatically create nodes and relations in the graph.
 - Questions like `Who won IPL 2025?` are answered from these relations before

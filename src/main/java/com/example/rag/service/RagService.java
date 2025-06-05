@@ -8,9 +8,12 @@ import com.example.rag.repo.GraphRelationRepository;
 import com.example.rag.util.EmbeddingUtil;
 import com.example.rag.model.GraphNode;
 import com.example.rag.model.GraphRelation;
+import com.example.rag.service.LangGraphService;
+
 
 
 import com.example.rag.util.EmbeddingUtil;
+
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.rag.service.OpenRouterService;
 
+
 import com.example.rag.service.OpenAiService;
+
 
 
 import java.util.List;
@@ -41,6 +46,9 @@ public class RagService {
 
     @Autowired
     private GraphRelationRepository relationRepository;
+
+    @Autowired
+    private LangGraphService langGraphService;
 
     public List<Document> graphSearch(String query) {
         Document regex = new Document("$regex", query).append("$options", "i");
@@ -107,7 +115,8 @@ public class RagService {
                     if (!rels.isEmpty()) {
                         GraphNode subj = nodeRepository.findById(rels.get(0).getFrom()).orElse(null);
                         if (subj != null) {
-                            return subj.getName() + " " + verb + " " + objName;
+                            return langGraphService.verbalize(subj.getName(), verb, objName);
+
                         }
                     }
                 }
@@ -122,7 +131,6 @@ public class RagService {
         if (factAns != null) {
             return factAns;
         }
-
 
         List<Document> result = graphSearch(query);
         if (!result.isEmpty()) {
