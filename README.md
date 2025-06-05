@@ -67,18 +67,22 @@ The project now includes a very simple similarity search and chatbot endpoint, a
 - `GET /rag/similarity?q=your+query` &ndash; returns the top matching documents using cosine similarity.
 - `GET /rag/chat?q=your+question` &ndash; a toy chat endpoint that replies with the text of the most similar document.
 - `GET /rag/chat-graph?q=your+question` &ndash; uses a graph lookup to traverse linked docs for a basic conversation.
-- `GET /rag/chat-llm?q=your+question` &ndash; if no context is found in the graph, forwards the question to ChatGPT.
-- Previous ChatGPT answers are stored so repeated questions can be answered
+- `GET /rag/chat-llm?q=your+question` &ndash; if no context is found in the graph, forwards the question to OpenRouter's LLM.
+- Previous LLM answers are stored so repeated questions can be answered
   directly from MongoDB without another API call.
+- `POST /rag/fact?text=RCB+won+IPL+2025` &ndash; store a simple fact. Statements like
+  "RCB won IPL 2025" automatically create nodes and relations in the graph.
+- Questions like `Who won IPL 2025?` are answered from these relations before
+  calling the LLM.
 
 
 
 Embeddings are generated using a trivial length/character average approach in `EmbeddingUtil` to keep the example self-contained.
 
-Set the `OPENAI_API_KEY` environment variable to enable the ChatGPT fallback.
+Set the `OPENROUTER_API_KEY` environment variable to enable the OpenRouter fallback.
 
 If you encounter a `PKIX path building` error when the service contacts
-`api.openai.com`, the application configures an SSL context that trusts all
+`openrouter.ai`, the application configures an SSL context that trusts all
 certificates to simplify local testing.
 
 

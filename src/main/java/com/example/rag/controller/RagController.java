@@ -20,6 +20,12 @@ public class RagController {
         return ragService.save(doc);
     }
 
+    @PostMapping("/fact")
+    public String addFact(@RequestParam String text) {
+        ragService.save(new RagDocument(text));
+        return "saved";
+    }
+
     @GetMapping("/search")
     public List<Document> search(@RequestParam String q) {
         return ragService.graphSearch(q);
