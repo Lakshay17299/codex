@@ -9,16 +9,18 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
 
 ## Project Structure
 ```
-mcp-spring-boot-mongo-rag
 ├── pom.xml
 └── src
     └── main
-        └── java
-            └── com
-                └── example
-                    └── rag
-                        └── RagApplication.java
-```
+        ├── java
+        │   └── com
+        │       └── example
+        │           └── rag
+        │               └── RagApplication.java
+        └── resources
+            └── application.properties
+
+
 
 ## Setup Steps
 1. **Initialize the Spring Boot project**
@@ -42,9 +44,16 @@ mcp-spring-boot-mongo-rag
    </dependencies>
    ```
 
-3. **Create `RagApplication`** with a simple REST endpoint that queries MongoDB using the Graph API.
+3. **Configure MongoDB**
+   Create `src/main/resources/application.properties` and set your connection URI:
+   ```properties
+   spring.data.mongodb.uri=mongodb://localhost:27017/ragdb
+   ```
 
-4. **Run the application**:
+4. **Create `RagApplication`** with a simple REST endpoint that queries MongoDB using the Graph API.
+
+5. **Run the application**:
+
    ```bash
    mvn spring-boot:run
    ```
