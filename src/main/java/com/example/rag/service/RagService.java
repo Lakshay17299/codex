@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import com.example.rag.service.OpenAiService;
+
 import java.util.List;
 
 @Service
@@ -14,6 +16,9 @@ public class RagService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private OpenAiService openAiService;
 
     public List<Document> graphSearch(String query) {
         Document match = new Document("$match", new Document("text", query));
@@ -46,6 +51,16 @@ public class RagService {
             }
         }
         return answer;
+    }
+
+    public String chatWithFallback(String query) {
+        List<Document> result = graphSearch(query);
+        if (!result.isEmpty()) {
+            Document doc = result.get(0);
+            String answer = doc.getString("text");
+            return answer == null ? "" : answer;
+        }
+        return openAiService.chat(query);
     }
 
 

@@ -40,6 +40,9 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
        <dependency>
            <groupId>org.springframework.boot</groupId>
            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+- `GET /rag/chat-llm?q=your+question` &ndash; if no context is found in the graph, forwards the question to ChatGPT.
+Set the `OPENAI_API_KEY` environment variable to enable the ChatGPT fallback.
+
        </dependency>
    </dependencies>
    ```
