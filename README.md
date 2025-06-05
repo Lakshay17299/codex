@@ -19,7 +19,8 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
         │               └── RagApplication.java
         └── resources
             └── application.properties
-```
+
+
 
 ## Setup Steps
 1. **Initialize the Spring Boot project**
@@ -52,6 +53,7 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
 4. **Create `RagApplication`** with a simple REST endpoint that queries MongoDB using the Graph API.
 
 5. **Run the application**:
+
    ```bash
    mvn spring-boot:run
    ```
