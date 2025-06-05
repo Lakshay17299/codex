@@ -42,5 +42,7 @@ public class RagController {
     @GetMapping("/chat-graph")
     public String chatGraph(@RequestParam String q) {
         return ragService.graphChat(q);
+
+
     }
 }

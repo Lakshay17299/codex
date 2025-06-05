@@ -59,6 +59,7 @@ The project now includes a very simple similarity search and chatbot endpoint, a
 - `GET /rag/chat?q=your+question` &ndash; a toy chat endpoint that replies with the text of the most similar document.
 - `GET /rag/chat-graph?q=your+question` &ndash; uses a graph lookup to traverse linked docs for a basic conversation.
 
+
 Embeddings are generated using a trivial length/character average approach in `EmbeddingUtil` to keep the example self-contained.
 
 This example gives you a starting point to explore MongoDB Graph RAG in a Spring Boot application.
