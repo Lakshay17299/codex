@@ -3,8 +3,44 @@ package com.example.rag.service;
 import com.example.rag.model.RagDocument;
 import com.example.rag.model.ConversationEntry;
 import com.example.rag.repo.ConversationRepository;
+import com.example.rag.repo.GraphNodeRepository;
+import com.example.rag.repo.GraphRelationRepository;
+import com.example.rag.model.GraphNode;
+import com.example.rag.model.GraphRelation;
 
-import com.example.rag.util.EmbeddingUtil;
+    @Autowired
+    private GraphNodeRepository nodeRepository;
+
+    @Autowired
+    private GraphRelationRepository relationRepository;
+
+        Document regex = new Document("$regex", query).append("$options", "i");
+        Document match = new Document("$match", new Document("text", regex));
+    private String answerFact(String question) {
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("Who won(?: in)? (.+)\??", java.util.regex.Pattern.CASE_INSENSITIVE)
+                .matcher(question);
+        if (m.matches()) {
+            String event = m.group(1).trim();
+            GraphNode eventNode = nodeRepository.findByName(event);
+            if (eventNode != null) {
+                List<GraphRelation> rels = relationRepository.findByToAndType(eventNode.getId(), "won");
+                if (!rels.isEmpty()) {
+                    GraphNode winner = nodeRepository.findById(rels.get(0).getFrom()).orElse(null);
+                    if (winner != null) {
+                        return winner.getName() + " won " + event;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+        String factAns = answerFact(query);
+        if (factAns != null) {
+            return factAns;
+        }
+
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -92,8 +128,30 @@ public class RagService {
 
     }
 
+        RagDocument saved = mongoTemplate.save(doc);
 
-    public List<RagDocument> similaritySearch(String query) {
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("(.+) won(?: in)? (.+)", java.util.regex.Pattern.CASE_INSENSITIVE)
+                .matcher(doc.getText());
+        if (m.matches()) {
+            String subjectName = m.group(1).trim();
+            String objectName = m.group(2).trim();
+            GraphNode subj = nodeRepository.findByName(subjectName);
+            if (subj == null) {
+                subj = nodeRepository.save(new GraphNode(subjectName));
+            }
+            GraphNode obj = nodeRepository.findByName(objectName);
+            if (obj == null) {
+                obj = nodeRepository.save(new GraphNode(objectName));
+            }
+            GraphRelation rel = new GraphRelation();
+            rel.setFrom(subj.getId());
+            rel.setTo(obj.getId());
+            rel.setType("won");
+            relationRepository.save(rel);
+        }
+
+        return saved;
         double[] qVec = EmbeddingUtil.embed(query);
         List<RagDocument> all = mongoTemplate.findAll(RagDocument.class);
         return all.stream()

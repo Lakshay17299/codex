@@ -44,6 +44,10 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
    </dependencies>
    ```
 
+- `POST /rag/fact?text=RCB+won+IPL+2025` &ndash; store a simple fact. Statements like
+  "RCB won IPL 2025" automatically create nodes and relations in the graph.
+- Questions like `Who won IPL 2025?` are answered from these relations before
+  calling ChatGPT.
 3. **Configure MongoDB**
    Create `src/main/resources/application.properties` and set your connection URI:
    ```properties
