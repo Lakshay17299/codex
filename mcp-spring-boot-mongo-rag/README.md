@@ -49,4 +49,14 @@ mcp-spring-boot-mongo-rag
    mvn spring-boot:run
    ```
 
+## New Features
+
+The project now includes a very simple similarity search and chatbot endpoint.
+
+- `POST /rag` &ndash; add a document. Each document stores a basic embedding.
+- `GET /rag/similarity?q=your+query` &ndash; returns the top matching documents using cosine similarity.
+- `GET /rag/chat?q=your+question` &ndash; a toy chat endpoint that replies with the text of the most similar document.
+
+Embeddings are generated using a trivial length/character average approach in `EmbeddingUtil` to keep the example self-contained.
+
 This example gives you a starting point to explore MongoDB Graph RAG in a Spring Boot application.
