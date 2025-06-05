@@ -2,6 +2,19 @@ package com.example.rag.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import jakarta.annotation.PostConstruct;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import jakarta.annotation.PostConstruct;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -23,12 +36,14 @@ import javax.net.ssl.SSLContext;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class OpenAiService {
+
     private  RestTemplate restTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
     @Value("${OPENAI_API_KEY}")
@@ -68,6 +83,7 @@ public class OpenAiService {
         if (apiKey == null || apiKey.isEmpty()) {
             return "OpenAI API key not configured";
         }
+
         String url = "https://openrouter.ai/api/v1/chat/completions";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -87,11 +103,13 @@ public class OpenAiService {
         );
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
+
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
             JsonNode root = mapper.readTree(response.getBody());
             return root.get("choices").get(0).get("message").get("content").asText();
         } catch (Exception e) {
+
             return "Error calling OpenRouter: " + e.getMessage();
         }
     }
