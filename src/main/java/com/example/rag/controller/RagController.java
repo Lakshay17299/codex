@@ -45,4 +45,10 @@ public class RagController {
 
 
     }
+
+    @GetMapping("/chat-llm")
+    public String chatLlm(@RequestParam String q) {
+        return ragService.chatWithFallback(q);
+    }
+
 }
