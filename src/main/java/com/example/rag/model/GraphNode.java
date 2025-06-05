@@ -3,17 +3,16 @@ package com.example.rag.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "docs")
-public class RagDocument {
+@Document(collection = "nodes")
+public class GraphNode {
     @Id
     private String id;
-    private String text;
+    private String name;
 
-    public RagDocument() {
-    }
+    public GraphNode() {}
 
-    public RagDocument(String text) {
-        this.text = text;
+    public GraphNode(String name) {
+        this.name = name;
     }
 
     public String getId() {
@@ -24,11 +23,11 @@ public class RagDocument {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getName() {
+        return name;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setName(String name) {
+        this.name = name;
     }
 }
