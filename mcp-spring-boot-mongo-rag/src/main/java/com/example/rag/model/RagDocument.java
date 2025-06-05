@@ -9,6 +9,8 @@ public class RagDocument {
     private String id;
     private String text;
     private double[] embedding;
+    private java.util.List<String> relatedIds;
+
 
     public RagDocument() {
     }
@@ -40,4 +42,13 @@ public class RagDocument {
     public void setEmbedding(double[] embedding) {
         this.embedding = embedding;
     }
+
+    public java.util.List<String> getRelatedIds() {
+        return relatedIds;
+    }
+
+    public void setRelatedIds(java.util.List<String> relatedIds) {
+        this.relatedIds = relatedIds;
+    }
+
 }

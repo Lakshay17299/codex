@@ -51,11 +51,14 @@ mcp-spring-boot-mongo-rag
 
 ## New Features
 
-The project now includes a very simple similarity search and chatbot endpoint.
+The project now includes a very simple similarity search and chatbot endpoint, along with a demo of `$graphLookup`.
 
 - `POST /rag` &ndash; add a document. Each document stores a basic embedding.
+- `GET /rag/search?q=text` &ndash; fetch the document and its linked neighbors using `$graphLookup`.
 - `GET /rag/similarity?q=your+query` &ndash; returns the top matching documents using cosine similarity.
 - `GET /rag/chat?q=your+question` &ndash; a toy chat endpoint that replies with the text of the most similar document.
+- `GET /rag/chat-graph?q=your+question` &ndash; uses a graph lookup to traverse linked docs for a basic conversation.
+
 
 Embeddings are generated using a trivial length/character average approach in `EmbeddingUtil` to keep the example self-contained.
 

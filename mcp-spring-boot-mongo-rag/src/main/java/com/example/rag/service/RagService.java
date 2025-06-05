@@ -16,12 +16,38 @@ public class RagService {
     private MongoTemplate mongoTemplate;
 
     public List<Document> graphSearch(String query) {
-        // Placeholder for a $graphLookup or $search operation
-        Document stage = new Document("$match", new Document("text", query));
+        Document match = new Document("$match", new Document("text", query));
+        Document lookup = new Document("$graphLookup",
+                new Document("from", "docs")
+                        .append("startWith", "$relatedIds")
+                        .append("connectFromField", "relatedIds")
+                        .append("connectToField", "_id")
+                        .append("as", "neighbors")
+                        .append("maxDepth", 2));
+
         return mongoTemplate.getCollection("docs")
-                .aggregate(List.of(stage))
+                .aggregate(List.of(match, lookup))
                 .into(new java.util.ArrayList<>());
     }
+
+    public String graphChat(String query) {
+        List<Document> result = graphSearch(query);
+        if (result.isEmpty()) {
+            return "I couldn't find an answer.";
+        }
+        Document doc = result.get(0);
+        String answer = doc.getString("text");
+        @SuppressWarnings("unchecked")
+        List<Document> neighbors = (List<Document>) doc.get("neighbors");
+        if (neighbors != null && !neighbors.isEmpty()) {
+            String next = neighbors.get(0).getString("text");
+            if (next != null) {
+                answer += " " + next;
+            }
+        }
+        return answer;
+    }
+
 
     public List<RagDocument> similaritySearch(String query) {
         double[] qVec = EmbeddingUtil.embed(query);
@@ -38,6 +64,10 @@ public class RagService {
 
     public RagDocument save(RagDocument doc) {
         doc.setEmbedding(EmbeddingUtil.embed(doc.getText()));
+        if (doc.getRelatedIds() == null) {
+            doc.setRelatedIds(java.util.Collections.emptyList());
+        }
+
         return mongoTemplate.save(doc);
     }
 }

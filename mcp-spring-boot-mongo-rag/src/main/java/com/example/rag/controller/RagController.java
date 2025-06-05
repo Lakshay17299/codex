@@ -36,6 +36,13 @@ public class RagController {
         if (docs.isEmpty()) {
             return "I couldn't find an answer.";
         }
-        return docs.getFirst().getText();
+        return docs.get(0).getText();
+    }
+
+    @GetMapping("/chat-graph")
+    public String chatGraph(@RequestParam String q) {
+        return ragService.graphChat(q);
+
+
     }
 }
