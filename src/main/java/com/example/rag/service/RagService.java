@@ -1,6 +1,8 @@
 package com.example.rag.service;
 
 import com.example.rag.model.RagDocument;
+import com.example.rag.model.ConversationEntry;
+import com.example.rag.repo.ConversationRepository;
 import com.example.rag.util.EmbeddingUtil;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class RagService {
 
     @Autowired
     private OpenAiService openAiService;
+
+    @Autowired
+    private ConversationRepository conversationRepository;
 
     public List<Document> graphSearch(String query) {
         Document match = new Document("$match", new Document("text", query));
@@ -60,7 +65,30 @@ public class RagService {
             String answer = doc.getString("text");
             return answer == null ? "" : answer;
         }
-        return openAiService.chat(query);
+
+        // check previous conversation entries for a similar question
+        double[] qVec = EmbeddingUtil.embed(query);
+        List<ConversationEntry> convs = conversationRepository.findAll();
+        ConversationEntry best = null;
+        double bestSim = 0.0;
+        for (ConversationEntry c : convs) {
+            double sim = EmbeddingUtil.cosineSimilarity(qVec, c.getEmbedding());
+            if (sim > bestSim) {
+                bestSim = sim;
+                best = c;
+            }
+        }
+        if (best != null && bestSim > 0.8) {
+            return best.getAnswer();
+        }
+
+        String answer = openAiService.chat(query);
+        ConversationEntry entry = new ConversationEntry();
+        entry.setQuestion(query);
+        entry.setAnswer(answer);
+        entry.setEmbedding(qVec);
+        conversationRepository.save(entry);
+        return answer;
     }
 
 

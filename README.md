@@ -41,6 +41,8 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
            <groupId>org.springframework.boot</groupId>
            <artifactId>spring-boot-starter-data-mongodb</artifactId>
        </dependency>
+- Previous ChatGPT answers are stored so repeated questions can be answered
+  directly from MongoDB without another API call.
    </dependencies>
    ```
 
