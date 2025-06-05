@@ -24,4 +24,18 @@ public class RagController {
     public List<Document> search(@RequestParam String q) {
         return ragService.graphSearch(q);
     }
+
+    @GetMapping("/similarity")
+    public List<RagDocument> similarity(@RequestParam String q) {
+        return ragService.similaritySearch(q);
+    }
+
+    @GetMapping("/chat")
+    public String chat(@RequestParam String q) {
+        List<RagDocument> docs = ragService.similaritySearch(q);
+        if (docs.isEmpty()) {
+            return "I couldn't find an answer.";
+        }
+        return docs.getFirst().getText();
+    }
 }
