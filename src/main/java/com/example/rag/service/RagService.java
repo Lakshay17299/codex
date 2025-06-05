@@ -9,12 +9,23 @@ import com.example.rag.util.EmbeddingUtil;
 import com.example.rag.model.GraphNode;
 import com.example.rag.model.GraphRelation;
 import com.example.rag.service.LangGraphService;
+
+
+
+import com.example.rag.util.EmbeddingUtil;
+
+
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.example.rag.service.OpenRouterService;
+
+
+import com.example.rag.service.OpenAiService;
+
+
 
 import java.util.List;
 
@@ -42,6 +53,7 @@ public class RagService {
     public List<Document> graphSearch(String query) {
         Document regex = new Document("$regex", query).append("$options", "i");
         Document match = new Document("$match", new Document("text", regex));
+
         Document lookup = new Document("$graphLookup",
                 new Document("from", "docs")
                         .append("startWith", "$relatedIds")
@@ -104,6 +116,7 @@ public class RagService {
                         GraphNode subj = nodeRepository.findById(rels.get(0).getFrom()).orElse(null);
                         if (subj != null) {
                             return langGraphService.verbalize(subj.getName(), verb, objName);
+
                         }
                     }
                 }
@@ -143,6 +156,7 @@ public class RagService {
         }
 
         String answer = openRouterService.chat(query);
+
         ConversationEntry entry = new ConversationEntry();
         entry.setQuestion(query);
         entry.setAnswer(answer);
@@ -193,5 +207,6 @@ public class RagService {
         }
 
         return saved;
+
     }
 }
