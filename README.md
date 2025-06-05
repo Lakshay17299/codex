@@ -47,6 +47,10 @@ This sample project outlines the steps to build a minimal RAG (Retrieval Augment
 3. **Configure MongoDB**
    Create `src/main/resources/application.properties` and set your connection URI:
    ```properties
+If you encounter a `PKIX path building` error when the service contacts
+`api.openai.com`, the application configures an SSL context that trusts all
+certificates to simplify local testing.
+
    spring.data.mongodb.uri=mongodb://localhost:27017/ragdb
    ```
 

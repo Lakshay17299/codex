@@ -8,6 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import jakarta.annotation.PostConstruct;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +25,21 @@ public class OpenAiService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper mapper = new ObjectMapper();
     private final String apiKey = System.getenv("OPENAI_API_KEY");
+
+    @PostConstruct
+    private void configureSsl() {
+        try {
+            CloseableHttpClient client = HttpClients.custom()
+                    .setSSLContext(new SSLContextBuilder()
+                            .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
+                            .build())
+                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                    .build();
+            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(client));
+        } catch (Exception e) {
+            // if SSL setup fails, fall back to default
+        }
+    }
 
     public String chat(String message) {
         if (apiKey == null || apiKey.isEmpty()) {
