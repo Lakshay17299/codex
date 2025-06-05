@@ -3,6 +3,7 @@ package com.example.rag.service;
 import com.example.rag.model.RagDocument;
 import com.example.rag.model.ConversationEntry;
 import com.example.rag.repo.ConversationRepository;
+
 import com.example.rag.util.EmbeddingUtil;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ public class RagService {
 
     @Autowired
     private ConversationRepository conversationRepository;
-
     public List<Document> graphSearch(String query) {
         Document match = new Document("$match", new Document("text", query));
         Document lookup = new Document("$graphLookup",
@@ -89,6 +89,7 @@ public class RagService {
         entry.setEmbedding(qVec);
         conversationRepository.save(entry);
         return answer;
+
     }
 
 
