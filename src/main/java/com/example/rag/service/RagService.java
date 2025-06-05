@@ -24,6 +24,7 @@ public class RagService {
                         .append("connectToField", "_id")
                         .append("as", "neighbors")
                         .append("maxDepth", 2));
+
         return mongoTemplate.getCollection("docs")
                 .aggregate(List.of(match, lookup))
                 .into(new java.util.ArrayList<>());
@@ -47,6 +48,7 @@ public class RagService {
         return answer;
     }
 
+
     public List<RagDocument> similaritySearch(String query) {
         double[] qVec = EmbeddingUtil.embed(query);
         List<RagDocument> all = mongoTemplate.findAll(RagDocument.class);
@@ -65,6 +67,7 @@ public class RagService {
         if (doc.getRelatedIds() == null) {
             doc.setRelatedIds(java.util.Collections.emptyList());
         }
+
         return mongoTemplate.save(doc);
     }
 }
