@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.rag.service.OpenAiService;
 
-
 import java.util.List;
 
 @Service
@@ -63,7 +62,6 @@ public class RagService {
         }
         return openAiService.chat(query);
     }
-
 
 
     public List<RagDocument> similaritySearch(String query) {

@@ -75,5 +75,9 @@ Embeddings are generated using a trivial length/character average approach in `E
 
 Set the `OPENAI_API_KEY` environment variable to enable the ChatGPT fallback.
 
+If you encounter a `PKIX path building` error when the service contacts
+`api.openai.com`, the application configures an SSL context that trusts all
+certificates to simplify local testing.
+
 
 This example gives you a starting point to explore MongoDB Graph RAG in a Spring Boot application.

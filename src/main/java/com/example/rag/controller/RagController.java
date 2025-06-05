@@ -50,5 +50,4 @@ public class RagController {
     public String chatLlm(@RequestParam String q) {
         return ragService.chatWithFallback(q);
     }
-
 }
